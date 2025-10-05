@@ -1,0 +1,127 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.jetbrainsKotlinSerialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.parcelize)
+    //alias(libs.plugins.google.services)
+}
+
+def versionMajor = 6
+def versionMinor = 01
+def versionPatch = 01
+
+android {
+    namespace = "com.mavg.myapplication"
+    compileSdk = 36
+    flavorDimensions "default"
+    defaultConfig {
+        applicationId = "com.mavg.myapplication"
+        minSdk = 27
+        targetSdk = 36
+        versionCode versionMajor * 100 + versionMinor * 10 + versionPatch
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        applicationVariants.all {
+            variant ->
+                variant.outputs.each {
+                    output ->
+                        def date = new Date();
+                        def formattedDate = date.format('dd-MM-yyyy')
+                        def name = "${variant.getFlavorName()}JetPackCompose${variant.versionName}(${formattedDate}).apk"
+                        output.outputFileName = name
+                }
+        }
+
+        debug {
+
+        }
+
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_20
+        targetCompatibility JavaVersion.VERSION_20
+    }
+    kotlinOptions {
+        jvmTarget = '20'
+        freeCompilerArgs = ['-XXLanguage:+PropertyParamAnnotationDefaultTargetMode']
+    }
+    buildFeatures {
+        viewBinding true
+        compose true
+        buildConfig = true
+    }
+}
+
+dependencies {
+
+    //Core
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.lifecycle.runtime.ktx
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation libs.androidx.activity.compose
+    implementation platform(libs.androidx.compose.bom)
+    implementation libs.androidx.ui
+    implementation libs.androidx.ui.graphics
+    implementation libs.androidx.ui.tooling.preview
+    implementation libs.androidx.material3
+    implementation libs.kotlinx.serialization.json
+    implementation libs.lottie.compose
+    implementation libs.constraint.layout
+    implementation libs.accompanist.systemuicontroller
+    implementation libs.glide
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+    implementation libs.core
+    implementation(libs.zxing.android.embedded) { transitive = false }
+
+    //Navigation
+    implementation libs.androidx.navigation.compose
+
+    //DI
+    implementation libs.hilt.android
+    implementation libs.hilt.navigation
+    ksp libs.hilt.compiler
+
+    //firebase
+    //implementation libs.firebase.core
+    //implementation libs.firebase.messaging
+    //implementation(platform(libs.firebase.bom))
+    //implementation(libs.firebase.analytics.ktx)
+    //implementation(libs.firebase.auth.ktx)
+
+    //Retrofit
+    implementation libs.retrofit
+    implementation libs.retrofit.adapter
+    implementation libs.converter.gson
+    implementation libs.logging.interceptor
+    implementation libs.androidx.preference.ktx
+
+
+    //Testing
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+    androidTestImplementation platform(libs.androidx.compose.bom)
+    androidTestImplementation libs.androidx.ui.test.junit4
+    debugImplementation libs.androidx.ui.tooling
+    debugImplementation libs.androidx.ui.test.manifest
+
+    implementation(libs.kotlinx.datetime)
+
+    // Opcional: si usas iconos como Icons.Default.CalendarToday
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation (libs.compose.charts)
+}
